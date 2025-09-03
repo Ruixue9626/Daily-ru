@@ -11,7 +11,7 @@
       background: linear-gradient(135deg, #fef6e4, #f1f9f6);
       color: #333;
       height: 100%;
-      overflow: hidden; /* 禁止滾動 */
+      overflow: hidden;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -73,21 +73,29 @@
   <div class="footer">by Ruixue</div>
 
   <script>
-    // 取得今天日期
     const today = new Date();
     const yyyy = today.getFullYear();
-    const mm = String(today.getMonth() + 1).padStart(2, "0");
-    const dd = String(today.getDate()).padStart(2, "0");
+    const mm = String(today.getMonth() + 1).padStart(2,"0");
+    const dd = String(today.getDate()).padStart(2,"0");
     const todayStrFormal = `${yyyy}年${mm}月${dd}日`;
 
     document.getElementById("today-date").textContent = todayStrFormal;
     document.getElementById("today-text").textContent = `今天是 ${todayStrFormal}`;
 
-    // 設定會考日期 (2025/05/17)
-    const examDate = new Date("2025-05-17");
+    // 會考日期改成 2026/05/16
+    const examDate = new Date(2026, 4, 16); // 月份從0開始，4 = 5月
     const diffTime = examDate - today;
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    document.getElementById("countdown").textContent = `距離會考還剩 ${diffDays} 天`;
+    const diffDays = Math.ceil(diffTime / (1000*60*60*24));
+
+    let countdownText = "";
+    if(diffDays > 0){
+      countdownText = `距離會考還剩 ${diffDays} 天`;
+    }else if(diffDays === 0){
+      countdownText = "今天就是會考！加油！";
+    }else{
+      countdownText = `會考已經結束了 ${-diffDays} 天，加油迎接新的旅程！`;
+    }
+    document.getElementById("countdown").textContent = countdownText;
 
     // 勵志語
     const quotes = [
@@ -102,7 +110,7 @@
       "別怕路遠，只要走就會到。",
       "會考只是人生的一站，不代表全部，但要全力以赴！"
     ];
-    const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+    const randomQuote = quotes[Math.floor(Math.random()*quotes.length)];
     document.getElementById("quote").textContent = randomQuote;
   </script>
 </body>
