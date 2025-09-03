@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>會考倒數</title>
+  <style>
+    html, body {
+      margin:0; padding:0;
+      font-family: "Segoe UI", Roboto, system-ui, -apple-system;
+      background: linear-gradient(135deg, #fef6e4, #f1f9f6);
+      color: #333;
+      height: 100%;
+      overflow: hidden; /* 禁止滾動 */
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 20px;
+      font-weight: 700;
+      font-size: 18px;
+      background-color: #ff914d;
+      color: #fff;
+    }
+    .main {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    .today {
+      font-size: 22px;
+      margin-bottom: 20px;
+      color: #00897b;
+    }
+    .countdown {
+      font-size: 38px;
+      font-weight: bold;
+      margin-bottom: 30px;
+      color: #ff5722;
+    }
+    .quote {
+      font-size: 18px;
+      font-style: italic;
+      margin-bottom: 30px;
+      color: #007acc;
+    }
+    .footer {
+      font-size: 14px;
+      padding: 10px 20px;
+      text-align: left;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div>會考倒數</div>
+    <div id="today-date"></div>
+  </div>
+
+  <div class="main">
+    <div class="today" id="today-text"></div>
+    <div class="countdown" id="countdown"></div>
+    <div class="quote" id="quote"></div>
+  </div>
+
+  <div class="footer">by Ruixue</div>
+
+  <script>
+    // 取得今天日期
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, "0");
+    const dd = String(today.getDate()).padStart(2, "0");
+    const todayStrFormal = `${yyyy}年${mm}月${dd}日`;
+
+    document.getElementById("today-date").textContent = todayStrFormal;
+    document.getElementById("today-text").textContent = `今天是 ${todayStrFormal}`;
+
+    // 設定會考日期 (2025/05/17)
+    const examDate = new Date("2025-05-17");
+    const diffTime = examDate - today;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    document.getElementById("countdown").textContent = `距離會考還剩 ${diffDays} 天`;
+
+    // 勵志語
+    const quotes = [
+      "今天的努力，成就明天的自己。",
+      "不要害怕失敗，因為那是成功的養分。",
+      "一步一腳印，終點就會更近。",
+      "堅持下去，你比自己想像的更強大！",
+      "失敗只是暫時的，放棄才是永遠的。",
+      "今天不努力，明天努力找工作。",
+      "拼盡全力，才不會後悔。",
+      "你的未來，正在等著被點亮。",
+      "別怕路遠，只要走就會到。",
+      "會考只是人生的一站，不代表全部，但要全力以赴！"
+    ];
+    const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+    document.getElementById("quote").textContent = randomQuote;
+  </script>
+</body>
+</html>
