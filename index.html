@@ -9,8 +9,7 @@
       margin: 0; padding: 0;
       font-family: "Segoe UI", Roboto, system-ui, -apple-system;
       height: 100%;
-      background: url("https://github.com/Ruixue9626/Daily-ru/blob/99bf45cc9a82f3de7175b8886679f87b73d0d60f/pngtree-memphis-torn-paper-notepad-image_1069265.jpg?raw=true") no-repeat center center fixed;
-      background-size: cover;
+      background: #FFF0CD;
       color: #000;
       display: flex;
       flex-direction: column;
@@ -23,7 +22,6 @@
       font-weight: 700;
       font-size: 20px;
       color: #000;
-      background: transparent;
     }
     .main {
       flex-grow: 1;
@@ -46,11 +44,11 @@
       font-weight: bold;
     }
     .countdown {
-      font-size: 80px;
+      font-size: 80px; /* 預設大小 */
       font-weight: bold;
       margin-bottom: 40px;
-      color: #d50000; /* 紅色 */
-      text-shadow: 3px 3px 8px rgba(0,0,0,0.8); /* 黑色陰影 */
+      color: #d50000;
+      text-shadow: 3px 3px 8px rgba(0,0,0,0.8);
     }
     .quote {
       font-size: 22px;
@@ -59,6 +57,22 @@
       color: #111;
       max-width: 80%;
       line-height: 1.6;
+    }
+    .controls {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      background: #333;
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    .controls select {
+      margin-left: 8px;
+      padding: 4px;
+      border-radius: 4px;
+      border: none;
     }
   </style>
 </head>
@@ -73,6 +87,16 @@
     <div class="title">會考倒數</div>
     <div class="countdown" id="countdown"></div>
     <div class="quote" id="quote"></div>
+  </div>
+
+  <!-- 右下角控制大小 -->
+  <div class="controls">
+    字體大小：
+    <select id="size-selector">
+      <option value="small">小</option>
+      <option value="medium">中</option>
+      <option value="large">大</option>
+    </select>
   </div>
 
   <script>
@@ -113,6 +137,36 @@
     ];
     const randomQuote = quotes[Math.floor(Math.random()*quotes.length)];
     document.getElementById("quote").textContent = randomQuote;
+
+    const sizeSelector = document.getElementById("size-selector");
+    const countdownEl = document.getElementById("countdown");
+
+    // 設定字體大小
+    function applySize(size){
+      switch(size){
+        case "small":
+          countdownEl.style.fontSize = "60px";
+          break;
+        case "medium":
+          countdownEl.style.fontSize = "80px";
+          break;
+        case "large":
+          countdownEl.style.fontSize = "120px";
+          break;
+      }
+    }
+
+    // 載入上次的設定
+    const savedSize = localStorage.getItem("countdownSize") || "medium";
+    sizeSelector.value = savedSize;
+    applySize(savedSize);
+
+    // 監聽切換並儲存
+    sizeSelector.addEventListener("change", (e) => {
+      const newSize = e.target.value;
+      applySize(newSize);
+      localStorage.setItem("countdownSize", newSize);
+    });
   </script>
 </body>
 </html>
