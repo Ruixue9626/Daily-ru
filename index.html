@@ -188,14 +188,14 @@
   <div id="menu-btn">☰</div>
 
   <div class="controls">
-    字體大小：
+    <span>字體大小：</span>
     <select id="size-selector">
       <option value="small">小</option>
       <option value="medium">中</option>
       <option value="large">大</option>
     </select>
     <br><br>
-    佈景主題：
+    <span>佈景主題：</span>
     <select id="theme-selector" style="margin-left:8px;">
       <option value="default">預設</option>
       <option value="dark">深色</option>
@@ -275,7 +275,6 @@
 
     function applyTheme(theme){
       const body = document.body;
-      const countdown = document.getElementById("countdown");
 
       if(theme === "dark"){
         body.style.background = "#111";
@@ -294,7 +293,7 @@
         });
       }
 
-      // ☰ 內文字固定白色
+      // ☰ 內文字統一白色，包括「字體大小」「佈景主題」以及按鈕
       document.querySelectorAll(".controls > *:not(select)").forEach(el => el.style.color = "#fff");
 
       // 下拉選單文字固定黑色
