@@ -22,7 +22,7 @@
       padding: 12px 20px;
       font-weight: 700;
       font-size: 20px;
-      color: inherit;
+      color: #000;
     }
     .main {
       flex-grow: 1;
@@ -35,27 +35,27 @@
     .today {
       font-size: 20px;
       margin-bottom: 15px;
-      color: inherit;
+      color: #000;
       font-weight: 500;
     }
     .title {
       font-size: 26px;
       margin-bottom: 15px;
-      color: inherit;
+      color: #000;
       font-weight: bold;
     }
     .countdown {
       font-size: 80px;
       font-weight: bold;
       margin-bottom: 40px;
-      color: #d50000; /* 倒數數字永遠紅色 */
+      color: #d50000;
       text-shadow: 3px 3px 8px rgba(0,0,0,0.8);
     }
     .quote {
       font-size: 22px;
       font-style: italic;
       margin-bottom: 30px;
-      color: inherit;
+      color: #111;
       max-width: 80%;
       line-height: 1.6;
     }
@@ -76,6 +76,7 @@
       padding: 4px;
       border-radius: 4px;
       border: none;
+      color: #000; /* 下拉選單文字固定黑色 */
     }
     .controls button.dev-btn {
       display: block;
@@ -115,8 +116,8 @@
       position: fixed;
       top: 50%; left: 50%;
       transform: translate(-50%, -50%);
-      background: #fff; /* 保持白色 */
-      color: #000;      /* 保持黑色字體 */
+      background: #fff;
+      color: #000;
       padding: 20px;
       border-radius: 16px;
       width: 320px;
@@ -261,46 +262,43 @@
 
     const sizeSelector = document.getElementById("size-selector");
     const countdownEl = document.getElementById("countdown");
+    const themeSelector = document.getElementById("theme-selector");
+    const controls = document.querySelector(".controls");
 
     function applySize(size){
       switch(size){
-        case "small":
-          countdownEl.style.fontSize = "60px";
-          break;
-        case "medium":
-          countdownEl.style.fontSize = "80px";
-          break;
-        case "large":
-          countdownEl.style.fontSize = "120px";
-          break;
+        case "small": countdownEl.style.fontSize = "60px"; break;
+        case "medium": countdownEl.style.fontSize = "80px"; break;
+        case "large": countdownEl.style.fontSize = "120px"; break;
       }
     }
 
-    const themeSelector = document.getElementById("theme-selector");
     function applyTheme(theme){
+      const body = document.body;
+      const countdown = document.getElementById("countdown");
+
       if(theme === "dark"){
-        document.body.style.background = "#111";
-        document.body.style.color = "#fff";
-
-        // 深色模式強制除了倒數以外字體全白
-        document.querySelectorAll(".today, .title, .quote, .topbar, .controls")
-          .forEach(el => el.style.color = "#fff");
-
-        // 開發者視窗維持黑字
-        const devModal = document.getElementById("developer-modal");
-        devModal.style.background = "#fff";
-        devModal.style.color = "#000";
-
-      }else if(theme === "illustration"){
-        document.body.style.background = "url('https://github.com/Ruixue9626/Daily-ru/blob/main/IMG_20250503_151202.png?raw=true') center/cover no-repeat";
-        document.body.style.color = "#000";
-      }else{
-        document.body.style.background = "#FFF0CD";
-        document.body.style.color = "#000";
-
-        document.querySelectorAll(".today, .title, .quote, .topbar, .controls")
-          .forEach(el => el.style.color = "#000");
+        body.style.background = "#111";
+        document.querySelectorAll("body *:not(.countdown):not(.developer-modal):not(.developer-modal *)").forEach(el=>{
+          el.style.color = "#fff";
+        });
+      } else if(theme === "illustration"){
+        body.style.background = "url('https://github.com/Ruixue9626/Daily-ru/blob/main/IMG_20250503_151202.png?raw=true') center/cover no-repeat";
+        document.querySelectorAll("body *:not(.countdown):not(.developer-modal):not(.developer-modal *)").forEach(el=>{
+          el.style.color = "#000";
+        });
+      } else {
+        body.style.background = "#FFF0CD";
+        document.querySelectorAll("body *:not(.countdown):not(.developer-modal):not(.developer-modal *)").forEach(el=>{
+          el.style.color = "#000";
+        });
       }
+
+      // ☰ 內文字固定白色
+      document.querySelectorAll(".controls > *:not(select)").forEach(el => el.style.color = "#fff");
+
+      // 下拉選單文字固定黑色
+      document.querySelectorAll(".controls select").forEach(s => s.style.color = "#000");
     }
 
     const savedSize = localStorage.getItem("countdownSize") || "medium";
@@ -323,7 +321,6 @@
       localStorage.setItem("theme", newTheme);
     });
 
-    const controls = document.querySelector(".controls");
     const menuBtn = document.getElementById("menu-btn");
     const closeBtn = document.getElementById("close-btn");
 
