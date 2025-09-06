@@ -264,6 +264,7 @@
     const countdownEl = document.getElementById("countdown");
     const themeSelector = document.getElementById("theme-selector");
     const controls = document.querySelector(".controls");
+    const menuBtn = document.getElementById("menu-btn");
 
     function applySize(size){
       switch(size){
@@ -298,6 +299,9 @@
 
       // 下拉選單文字固定黑色
       document.querySelectorAll(".controls select").forEach(s => s.style.color = "#000");
+
+      // ☰ 按鈕文字固定白色
+      menuBtn.style.color = "#fff";
     }
 
     const savedSize = localStorage.getItem("countdownSize") || "medium";
@@ -320,7 +324,6 @@
       localStorage.setItem("theme", newTheme);
     });
 
-    const menuBtn = document.getElementById("menu-btn");
     const closeBtn = document.getElementById("close-btn");
 
     menuBtn.addEventListener("click", () => {
