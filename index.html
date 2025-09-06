@@ -67,12 +67,33 @@
       padding: 8px 12px;
       border-radius: 6px;
       font-size: 14px;
+      display: none; /* 一開始隱藏 */
     }
     .controls select {
       margin-left: 8px;
       padding: 4px;
       border-radius: 4px;
       border: none;
+    }
+    #menu-btn {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      background: #333;
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+    #close-btn {
+      margin-top: 8px;
+      background:#900;
+      color:#fff;
+      border:none;
+      padding:6px 10px;
+      border-radius:6px;
+      cursor:pointer;
     }
   </style>
 </head>
@@ -89,7 +110,10 @@
     <div class="quote" id="quote"></div>
   </div>
 
-  <!-- 右下角控制大小 -->
+  <!-- ☰ 漢堡選單按鈕 -->
+  <div id="menu-btn">☰</div>
+
+  <!-- 控制區 -->
   <div class="controls">
     字體大小：
     <select id="size-selector">
@@ -97,6 +121,16 @@
       <option value="medium">中</option>
       <option value="large">大</option>
     </select>
+    <br />
+    <br />
+    佈景主題：
+    <select id="theme-selector" style="margin-left:8px;">
+      <option value="default">預設</option>
+      <option value="dark">深色</option>
+      <option value="illustration">插圖</option>
+    </select>
+    <br />
+    <button id="close-btn">✕</button>
   </div>
 
   <script>
@@ -141,7 +175,6 @@
     const sizeSelector = document.getElementById("size-selector");
     const countdownEl = document.getElementById("countdown");
 
-    // 設定字體大小
     function applySize(size){
       switch(size){
         case "small":
@@ -156,16 +189,80 @@
       }
     }
 
-    // 載入上次的設定
+    const themeSelector = document.getElementById("theme-selector");
+    function applyTheme(theme){
+      if(theme === "dark"){
+        document.body.style.background = "#111";
+        document.body.style.color = "#fff";
+        document.querySelector(".topbar").style.color = "#fff";
+        document.querySelector(".main").style.color = "#fff";
+        document.getElementById("countdown").style.color = "#d50000";
+        document.querySelector(".quote").style.color = "#eee";
+        document.querySelector(".controls").style.background = "#333";
+        document.querySelector(".controls").style.color = "#fff";
+        document.getElementById("today-date").style.color = "#fff";
+        document.getElementById("today-text").style.color = "#fff";
+        document.querySelector(".title").style.color = "#fff";
+      }else if(theme === "illustration"){
+        document.body.style.background = "url('https://github.com/Ruixue9626/Daily-ru/blob/main/IMG_20250503_151202.png?raw=true') center/cover no-repeat";
+        document.body.style.color = "#000";
+        document.querySelector(".topbar").style.color = "#000";
+        document.querySelector(".main").style.color = "#000";
+        document.getElementById("countdown").style.color = "#d50000";
+        document.querySelector(".quote").style.color = "#111";
+        document.querySelector(".controls").style.background = "#333";
+        document.querySelector(".controls").style.color = "#fff";
+        document.getElementById("today-date").style.color = "#000";
+        document.getElementById("today-text").style.color = "#000";
+        document.querySelector(".title").style.color = "#000";
+      }else{
+        document.body.style.background = "#FFF0CD";
+        document.body.style.color = "#000";
+        document.querySelector(".topbar").style.color = "#000";
+        document.querySelector(".main").style.color = "#000";
+        document.getElementById("countdown").style.color = "#d50000";
+        document.querySelector(".quote").style.color = "#111";
+        document.querySelector(".controls").style.background = "#333";
+        document.querySelector(".controls").style.color = "#fff";
+        document.getElementById("today-date").style.color = "#000";
+        document.getElementById("today-text").style.color = "#000";
+        document.querySelector(".title").style.color = "#000";
+      }
+    }
+
     const savedSize = localStorage.getItem("countdownSize") || "medium";
     sizeSelector.value = savedSize;
     applySize(savedSize);
 
-    // 監聽切換並儲存
+    const savedTheme = localStorage.getItem("theme") || "default";
+    themeSelector.value = savedTheme;
+    applyTheme(savedTheme);
+
     sizeSelector.addEventListener("change", (e) => {
       const newSize = e.target.value;
       applySize(newSize);
       localStorage.setItem("countdownSize", newSize);
+    });
+
+    themeSelector.addEventListener("change", (e) => {
+      const newTheme = e.target.value;
+      applyTheme(newTheme);
+      localStorage.setItem("theme", newTheme);
+    });
+
+    // ☰ 和 ✕ 控制顯示/隱藏
+    const controls = document.querySelector(".controls");
+    const menuBtn = document.getElementById("menu-btn");
+    const closeBtn = document.getElementById("close-btn");
+
+    menuBtn.addEventListener("click", () => {
+      controls.style.display = "block";
+      menuBtn.style.display = "none";
+    });
+
+    closeBtn.addEventListener("click", () => {
+      controls.style.display = "none";
+      menuBtn.style.display = "block";
     });
   </script>
 </body>
