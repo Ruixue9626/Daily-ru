@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>會考倒數</title>
-  <link rel="icon" href="https://raw.githubusercontent.com/Ruixue9626/Daily-ru/bda8ea8e35c3a68a0b94b0b33c6962206dbc7228/%E7%84%A1%E6%A8%99%E9%A1%8C248_20250906113331.png" type="image/png" />
+  <link rel="icon" href="https://raw.githubusercontent.com/Ruixue9626/Daily-ru/bda8ea8e35c3a68a0b94b0b33c6962206dbc7228/%E7%84%A1%E6%A8%99%E9%A1%8C248_20250906113331.png" type="image/png">
   <style>
     html, body {
       margin: 0; padding: 0;
@@ -22,7 +22,7 @@
       padding: 12px 20px;
       font-weight: 700;
       font-size: 20px;
-      color: #000;
+      color: inherit;
     }
     .main {
       flex-grow: 1;
@@ -35,27 +35,27 @@
     .today {
       font-size: 20px;
       margin-bottom: 15px;
-      color: #000;
+      color: inherit;
       font-weight: 500;
     }
     .title {
       font-size: 26px;
       margin-bottom: 15px;
-      color: #000;
+      color: inherit;
       font-weight: bold;
     }
     .countdown {
       font-size: 80px;
       font-weight: bold;
       margin-bottom: 40px;
-      color: #d50000;
+      color: #d50000; /* 倒數數字永遠紅色 */
       text-shadow: 3px 3px 8px rgba(0,0,0,0.8);
     }
     .quote {
       font-size: 22px;
       font-style: italic;
       margin-bottom: 30px;
-      color: #111;
+      color: inherit;
       max-width: 80%;
       line-height: 1.6;
     }
@@ -65,16 +65,29 @@
       bottom: 20px;
       background: #333;
       color: #fff;
-      padding: 12px;
-      border-radius: 10px;
+      padding: 12px 16px;
+      border-radius: 12px;
       font-size: 14px;
       display: none;
+      min-width: 180px;
     }
     .controls select {
       margin-left: 8px;
       padding: 4px;
       border-radius: 4px;
       border: none;
+    }
+    .controls button.dev-btn {
+      display: block;
+      width: 100%;
+      margin-top: 12px;
+      padding: 8px;
+      border-radius: 10px;
+      background: #444;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      text-align: center;
     }
     #menu-btn {
       position: fixed;
@@ -96,53 +109,65 @@
       border-radius:6px;
       cursor:pointer;
     }
-    #dev-btn {
-      margin-top: 10px;
-      background:#555;
-      color:#fff;
-      border:none;
-      padding:8px 12px;
-      border-radius:6px;
-      cursor:pointer;
-      display:block;
-    }
+    /* 開發者介面 */
     .developer-modal {
       display: none;
       position: fixed;
       top: 50%; left: 50%;
       transform: translate(-50%, -50%);
-      background: #fff;
+      background: #fff; /* 保持白色 */
+      color: #000;      /* 保持黑色字體 */
       padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      border-radius: 16px;
       width: 320px;
+      max-width: 90%;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
       text-align: center;
     }
     .developer-modal img {
       width: 60px;
       height: 60px;
-      border-radius: 8px;
-      display: block;
-      margin: 0 auto 10px;
+      border-radius: 12px;
+      margin-right: 10px;
     }
-    .developer-modal h2 {
+    .developer-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+    .developer-header .text {
+      text-align: left;
+    }
+    .developer-header .text h2 {
+      margin: 0;
+      font-size: 20px;
+    }
+    .developer-links button {
+      display: block;
+      width: 100%;
       margin: 8px 0;
-      font-size: 18px;
-    }
-    .developer-modal button {
-      display: block;
-      margin: 10px auto;
-      padding: 8px 14px;
-      border: none;
-      border-radius: 8px;
+      padding: 10px;
+      border-radius: 10px;
       background: #fff;
       color: #000;
-      cursor: pointer;
       font-weight: bold;
+      border: 1px solid #000;
+      cursor: pointer;
     }
-    .developer-modal .footer {
-      margin-top: 10px;
+    .developer-footer {
+      margin-top: 12px;
       font-size: 14px;
+    }
+    .developer-close {
+      position: absolute;
+      top: 8px; right: 12px;
+      background: #900;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 4px 8px;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -159,10 +184,8 @@
     <div class="quote" id="quote"></div>
   </div>
 
-  <!-- ☰ 漢堡選單按鈕 -->
   <div id="menu-btn">☰</div>
 
-  <!-- 控制區 -->
   <div class="controls">
     字體大小：
     <select id="size-selector">
@@ -170,25 +193,31 @@
       <option value="medium">中</option>
       <option value="large">大</option>
     </select>
-    <br /><br />
+    <br><br>
     佈景主題：
     <select id="theme-selector" style="margin-left:8px;">
       <option value="default">預設</option>
       <option value="dark">深色</option>
       <option value="illustration">插圖</option>
     </select>
-    <br />
-    <button id="dev-btn">開發者</button>
+    <br>
+    <button class="dev-btn" id="dev-btn">開發者</button>
     <button id="close-btn">✕</button>
   </div>
 
-  <!-- 開發者視窗 -->
   <div class="developer-modal" id="developer-modal">
-    <img src="https://raw.githubusercontent.com/Ruixue9626/Daily-ru/bda8ea8e35c3a68a0b94b0b33c6962206dbc7228/%E7%84%A1%E6%A8%99%E9%A1%8C248_20250906113331.png" alt="logo">
-    <h2>Daily.ru</h2>
-    <button onclick="window.open('https://discord.gg/57BMuH6d3X')">Discord</button>
-    <button onclick="window.open('https://www.threads.com/@ruixue.9626')">Threads</button>
-    <div class="footer">製作：Ruixue</div>
+    <button class="developer-close" id="developer-close">✕</button>
+    <div class="developer-header">
+      <img src="https://raw.githubusercontent.com/Ruixue9626/Daily-ru/bda8ea8e35c3a68a0b94b0b33c6962206dbc7228/%E7%84%A1%E6%A8%99%E9%A1%8C248_20250906113331.png" alt="logo">
+      <div class="text">
+        <h2>Daily.ru</h2>
+      </div>
+    </div>
+    <div class="developer-links">
+      <button onclick="window.open('https://discord.gg/57BMuH6d3X','_blank')">Discord</button>
+      <button onclick="window.open('https://www.threads.com/@ruixue.9626','_blank')">Threads</button>
+    </div>
+    <div class="developer-footer">製作：Ruixue</div>
   </div>
 
   <script>
@@ -213,8 +242,7 @@
     }else{
       countdownText = `已經過了 ${-diffDays} 天`;
     }
-    const countdownEl = document.getElementById("countdown");
-    countdownEl.textContent = countdownText;
+    document.getElementById("countdown").textContent = countdownText;
 
     const quotes = [
       "今天的努力，成就明天的自己。",
@@ -232,12 +260,19 @@
     document.getElementById("quote").textContent = randomQuote;
 
     const sizeSelector = document.getElementById("size-selector");
+    const countdownEl = document.getElementById("countdown");
 
     function applySize(size){
       switch(size){
-        case "small": countdownEl.style.fontSize = "60px"; break;
-        case "medium": countdownEl.style.fontSize = "80px"; break;
-        case "large": countdownEl.style.fontSize = "120px"; break;
+        case "small":
+          countdownEl.style.fontSize = "60px";
+          break;
+        case "medium":
+          countdownEl.style.fontSize = "80px";
+          break;
+        case "large":
+          countdownEl.style.fontSize = "120px";
+          break;
       }
     }
 
@@ -245,22 +280,26 @@
     function applyTheme(theme){
       if(theme === "dark"){
         document.body.style.background = "#111";
-        document.querySelectorAll(".today, .title, .quote, .topbar, .developer-modal, #today-date, #today-text").forEach(el=>{
-          el.style.color = "#fff";
-        });
-        countdownEl.style.color = "#d50000";
+        document.body.style.color = "#fff";
+
+        // 深色模式強制除了倒數以外字體全白
+        document.querySelectorAll(".today, .title, .quote, .topbar, .controls")
+          .forEach(el => el.style.color = "#fff");
+
+        // 開發者視窗維持黑字
+        const devModal = document.getElementById("developer-modal");
+        devModal.style.background = "#fff";
+        devModal.style.color = "#000";
+
       }else if(theme === "illustration"){
         document.body.style.background = "url('https://github.com/Ruixue9626/Daily-ru/blob/main/IMG_20250503_151202.png?raw=true') center/cover no-repeat";
-        document.querySelectorAll(".today, .title, .quote, .topbar, .developer-modal, #today-date, #today-text").forEach(el=>{
-          el.style.color = "#000";
-        });
-        countdownEl.style.color = "#d50000";
+        document.body.style.color = "#000";
       }else{
         document.body.style.background = "#FFF0CD";
-        document.querySelectorAll(".today, .title, .quote, .topbar, .developer-modal, #today-date, #today-text").forEach(el=>{
-          el.style.color = "#000";
-        });
-        countdownEl.style.color = "#d50000";
+        document.body.style.color = "#000";
+
+        document.querySelectorAll(".today, .title, .quote, .topbar, .controls")
+          .forEach(el => el.style.color = "#000");
       }
     }
 
@@ -287,8 +326,6 @@
     const controls = document.querySelector(".controls");
     const menuBtn = document.getElementById("menu-btn");
     const closeBtn = document.getElementById("close-btn");
-    const devBtn = document.getElementById("dev-btn");
-    const devModal = document.getElementById("developer-modal");
 
     menuBtn.addEventListener("click", () => {
       controls.style.display = "block";
@@ -300,14 +337,16 @@
       menuBtn.style.display = "block";
     });
 
+    const devBtn = document.getElementById("dev-btn");
+    const devModal = document.getElementById("developer-modal");
+    const devClose = document.getElementById("developer-close");
+
     devBtn.addEventListener("click", () => {
       devModal.style.display = "block";
     });
 
-    devModal.addEventListener("click", (e) => {
-      if(e.target === devModal){
-        devModal.style.display = "none";
-      }
+    devClose.addEventListener("click", () => {
+      devModal.style.display = "none";
     });
   </script>
 </body>
