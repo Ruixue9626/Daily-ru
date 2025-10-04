@@ -201,6 +201,13 @@
       <option value="dark">深色</option>
       <option value="illustration">插圖</option>
     </select>
+    <br><br>
+    <span>顯示模式：</span>
+    <select id="mode-selector">
+      <option value="days">天</option>
+      <option value="dhm">天時分</option>
+      <option value="dhms">天時分秒</option>
+    </select>
     <br>
     <button class="dev-btn" id="dev-btn">開發者</button>
     <button id="close-btn">✕</button>
@@ -233,20 +240,6 @@
     document.getElementById("today-date").textContent = todayStrFormal;
     document.getElementById("today-text").textContent = `現在是 ${todayStrFormal}`;
 
-    const examDate = new Date(2026, 4, 16);
-    const diffTime = examDate - today;
-    const diffDays = Math.ceil(diffTime / (1000*60*60*24));
-
-    let countdownText = "";
-    if(diffDays > 0){
-      countdownText = `${diffDays} 天`;
-    }else if(diffDays === 0){
-      countdownText = "今天就是會考！加油！";
-    }else{
-      countdownText = `已經過了 ${-diffDays} 天`;
-    }
-    document.getElementById("countdown").textContent = countdownText;
-
     const quotes = [
       "今天的努力，成就明天的自己。",
       "不要害怕失敗，因為那是成功的養分。",
@@ -265,6 +258,7 @@
     const sizeSelector = document.getElementById("size-selector");
     const countdownEl = document.getElementById("countdown");
     const themeSelector = document.getElementById("theme-selector");
+    const modeSelector = document.getElementById("mode-selector");
     const controls = document.querySelector(".controls");
     const menuBtn = document.getElementById("menu-btn");
 
@@ -306,6 +300,56 @@
       menuBtn.style.color = "#fff";
     }
 
+    const examDate = new Date(2026, 4, 16);
+    let countdownInterval;
+
+    function updateCountdown() {
+      const now = new Date();
+      const diffTime = examDate - now;
+      const mode = modeSelector.value;
+
+      let countdownText = "";
+
+      if (diffTime <= 0) {
+        // 檢查是否是會考當天
+        if (now.getFullYear() === examDate.getFullYear() &&
+            now.getMonth() === examDate.getMonth() &&
+            now.getDate() === examDate.getDate()) {
+          countdownText = "今天就是會考！加油！";
+        } else {
+          const pastDays = Math.floor(-diffTime / (1000 * 60 * 60 * 24));
+          countdownText = `已經過了 ${pastDays} 天`;
+        }
+        if (countdownInterval) clearInterval(countdownInterval);
+      } else {
+        const days = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diffTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diffTime % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diffTime % (1000 * 60)) / 1000);
+
+        switch (mode) {
+          case 'dhm':
+            countdownText = `${days}天 ${String(hours).padStart(2, '0')}時 ${String(minutes).padStart(2, '0')}分`;
+            break;
+          case 'dhms':
+            countdownText = `${days}天 ${String(hours).padStart(2, '0')}時 ${String(minutes).padStart(2, '0')}分 ${String(seconds).padStart(2, '0')}秒`;
+            break;
+          case 'days':
+          default:
+            countdownText = `${days} 天`;
+            break;
+        }
+      }
+      countdownEl.textContent = countdownText;
+    }
+
+    function setCountdownMode(mode) {
+      if (countdownInterval) clearInterval(countdownInterval);
+      updateCountdown(); // 先立即更新一次
+      const updateRate = (mode === 'days') ? 60000 : 1000; // 'days'模式每分鐘更新即可，其他模式每秒更新
+      countdownInterval = setInterval(updateCountdown, updateRate);
+    }
+
     const savedSize = localStorage.getItem("countdownSize") || "medium";
     sizeSelector.value = savedSize;
     applySize(savedSize);
@@ -313,6 +357,10 @@
     const savedTheme = localStorage.getItem("theme") || "default";
     themeSelector.value = savedTheme;
     applyTheme(savedTheme);
+
+    const savedMode = localStorage.getItem("countdownMode") || "days";
+    modeSelector.value = savedMode;
+    setCountdownMode(savedMode);
 
     sizeSelector.addEventListener("change", (e) => {
       const newSize = e.target.value;
@@ -324,6 +372,12 @@
       const newTheme = e.target.value;
       applyTheme(newTheme);
       localStorage.setItem("theme", newTheme);
+    });
+
+    modeSelector.addEventListener("change", (e) => {
+      const newMode = e.target.value;
+      setCountdownMode(newMode);
+      localStorage.setItem("countdownMode", newMode);
     });
 
     const closeBtn = document.getElementById("close-btn");
