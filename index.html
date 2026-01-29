@@ -76,7 +76,7 @@
       padding: 4px;
       border-radius: 4px;
       border: none;
-      color: #000; /* 下拉選單文字固定黑色 */
+      color: #000;
     }
     .controls button.dev-btn {
       display: block;
@@ -110,7 +110,6 @@
       border-radius:6px;
       cursor:pointer;
     }
-    /* 開發者介面 */
     .developer-modal {
       display: none;
       position: fixed;
@@ -272,7 +271,6 @@
 
     function applyTheme(theme){
       const body = document.body;
-
       if(theme === "dark"){
         body.style.background = "#111";
         document.querySelectorAll("body *:not(.countdown):not(.developer-modal):not(.developer-modal *)").forEach(el=>{
@@ -289,14 +287,8 @@
           el.style.color = "#000";
         });
       }
-
-      // ☰ 內文字統一白色，包括「字體大小」「佈景主題」以及按鈕
       document.querySelectorAll(".controls > *:not(select)").forEach(el => el.style.color = "#fff");
-
-      // 下拉選單文字固定黑色
       document.querySelectorAll(".controls select").forEach(s => s.style.color = "#000");
-
-      // ☰ 按鈕文字固定白色
       menuBtn.style.color = "#fff";
     }
 
@@ -307,11 +299,9 @@
       const now = new Date();
       const diffTime = examDate - now;
       const mode = modeSelector.value;
-
       let countdownText = "";
 
       if (diffTime <= 0) {
-        // 檢查是否是會考當天
         if (now.getFullYear() === examDate.getFullYear() &&
             now.getMonth() === examDate.getMonth() &&
             now.getDate() === examDate.getDate()) {
@@ -322,17 +312,21 @@
         }
         if (countdownInterval) clearInterval(countdownInterval);
       } else {
-        const days = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        // 使用 Math.ceil 讓天數顯示為 107 天（進位制）
+        const days = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         const hours = Math.floor((diffTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         const minutes = Math.floor((diffTime % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((diffTime % (1000 * 60)) / 1000);
 
         switch (mode) {
           case 'dhm':
-            countdownText = `${days}天 ${String(hours).padStart(2, '0')}時 ${String(minutes).padStart(2, '0')}分`;
+            // 在時分模式下，天數還是建議用 floor 比較精確，但如果您想統一也可以改
+            const daysFloor = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            countdownText = `${daysFloor}天 ${String(hours).padStart(2, '0')}時 ${String(minutes).padStart(2, '0')}分`;
             break;
           case 'dhms':
-            countdownText = `${days}天 ${String(hours).padStart(2, '0')}時 ${String(minutes).padStart(2, '0')}分 ${String(seconds).padStart(2, '0')}秒`;
+            const daysFloorS = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            countdownText = `${daysFloorS}天 ${String(hours).padStart(2, '0')}時 ${String(minutes).padStart(2, '0')}分 ${String(seconds).padStart(2, '0')}秒`;
             break;
           case 'days':
           default:
@@ -345,19 +339,17 @@
 
     function setCountdownMode(mode) {
       if (countdownInterval) clearInterval(countdownInterval);
-      updateCountdown(); // 先立即更新一次
-      const updateRate = (mode === 'days') ? 60000 : 1000; // 'days'模式每分鐘更新即可，其他模式每秒更新
+      updateCountdown();
+      const updateRate = (mode === 'days') ? 60000 : 1000;
       countdownInterval = setInterval(updateCountdown, updateRate);
     }
 
     const savedSize = localStorage.getItem("countdownSize") || "medium";
     sizeSelector.value = savedSize;
     applySize(savedSize);
-
     const savedTheme = localStorage.getItem("theme") || "default";
     themeSelector.value = savedTheme;
     applyTheme(savedTheme);
-
     const savedMode = localStorage.getItem("countdownMode") || "days";
     modeSelector.value = savedMode;
     setCountdownMode(savedMode);
@@ -367,13 +359,11 @@
       applySize(newSize);
       localStorage.setItem("countdownSize", newSize);
     });
-
     themeSelector.addEventListener("change", (e) => {
       const newTheme = e.target.value;
       applyTheme(newTheme);
       localStorage.setItem("theme", newTheme);
     });
-
     modeSelector.addEventListener("change", (e) => {
       const newMode = e.target.value;
       setCountdownMode(newMode);
@@ -381,12 +371,10 @@
     });
 
     const closeBtn = document.getElementById("close-btn");
-
     menuBtn.addEventListener("click", () => {
       controls.style.display = "block";
       menuBtn.style.display = "none";
     });
-
     closeBtn.addEventListener("click", () => {
       controls.style.display = "none";
       menuBtn.style.display = "block";
@@ -395,11 +383,9 @@
     const devBtn = document.getElementById("dev-btn");
     const devModal = document.getElementById("developer-modal");
     const devClose = document.getElementById("developer-close");
-
     devBtn.addEventListener("click", () => {
       devModal.style.display = "block";
     });
-
     devClose.addEventListener("click", () => {
       devModal.style.display = "none";
     });
